@@ -1,9 +1,15 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
+    >
       <div class="title-container">
-        <h3 class="title"><img src="@/assets/common/login-logo.png" alt=""></h3>
+        <h3 class="title"><img src="@/assets/common/login-logo.png" alt="" /></h3>
       </div>
 
       <el-form-item prop="mobile">
@@ -41,90 +47,97 @@
         </span>
       </el-form-item>
 
-      <el-button class="loginBtn" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登陆</el-button>
+      <el-button
+        class="loginBtn"
+        :loading="loading"
+        type="primary"
+        style="width: 100%; margin-bottom: 30px"
+        @click.native.prevent="handleLogin"
+        >登陆</el-button
+      >
 
       <div class="tips">
-        <span style="margin-right:20px;">username: 13800000002</span>
+        <span style="margin-right: 20px">username: 13800000002</span>
         <span> password: 123456</span>
       </div>
-
     </el-form>
   </div>
 </template>
 
 <script>
-import { validMobile } from '@/utils/validate'
+import { validMobile } from "@/utils/validate";
+import { mapActions } from "vuex";
 
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     const validateMobile = (rule, value, callback) => {
-      validMobile(value) ? callback() : callback(new Error('手机号格式不正确！'))
-    }
+      validMobile(value) ? callback() : callback(new Error("手机号格式不正确！"));
+    };
     return {
       loginForm: {
-        mobile: '13800000002',
-        password: '123456'
+        mobile: "13800000002",
+        password: "123456",
       },
       loginRules: {
         mobile: [
-                  { required: true, trigger: 'blur', message: '手机号不能为空' },
-                  { validator: validateMobile, trigger: 'blur' },
-                ],
+          { required: true, trigger: "blur", message: "手机号不能为空" },
+          { validator: validateMobile, trigger: "blur" },
+        ],
         password: [
-                  { required: true, trigger: 'blur', message: '密码不能为空' },
-                  { min: 6, max: 16, trigger: 'blur', message: '密码长度在6～16位' }
-                ]
+          { required: true, trigger: "blur", message: "密码不能为空" },
+          { min: 6, max: 16, trigger: "blur", message: "密码长度在6～16位" },
+        ],
       },
       loading: false,
-      passwordType: 'password',
-      redirect: undefined
-    }
+      passwordType: "password",
+      redirect: undefined,
+    };
   },
   watch: {
     $route: {
-      handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+      handler: function (route) {
+        this.redirect = route.query && route.query.redirect;
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
+    ...mapActions(["user/login"]),
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
+      if (this.passwordType === "password") {
+        this.passwordType = "";
       } else {
-        this.passwordType = 'password'
+        this.passwordType = "password";
       }
       this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+        this.$refs.password.focus();
+      });
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+          try {
+            this.loading = true;
+            await this["user/login"](this.loginForm);
+            this.$router.push('/')
+          } catch (error) {
+            console.log(error)
+          } finally {
             this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    }
-  }
-}
+          }
+        } 
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss">
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
+$bg: #283443;
 $light_gray: #68b0fe;
 $cursor: #fff;
 
@@ -136,8 +149,8 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
-  background-image: url('~@/assets/common/login.jpg'); // 设置背景图片
-  background-position: center; 
+  background-image: url("~@/assets/common/login.jpg"); // 设置背景图片
+  background-position: center;
   .el-input {
     display: inline-block;
     height: 47px;
@@ -166,7 +179,7 @@ $cursor: #fff;
     border-radius: 5px;
     color: #454545;
     .el-form-item__error {
-      color: #fff
+      color: #fff;
     }
   }
 
@@ -176,13 +189,12 @@ $cursor: #fff;
     line-height: 32px;
     font-size: 24px;
   }
-  
 }
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
 $light_gray: #68b0fe;
 
 .login-container {
@@ -241,7 +253,5 @@ $light_gray: #68b0fe;
     cursor: pointer;
     user-select: none;
   }
-
-  
 }
 </style>
