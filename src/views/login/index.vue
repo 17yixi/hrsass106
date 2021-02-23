@@ -57,7 +57,7 @@
       >
 
       <div class="tips">
-        <span style="margin-right: 20px">username: 13800000002</span>
+        <span style="margin-right: 20px">username: 13800000003</span>
         <span> password: 123456</span>
       </div>
     </el-form>
@@ -76,7 +76,7 @@ export default {
     };
     return {
       loginForm: {
-        mobile: "13800000002",
+        mobile: "13800000003",
         password: "123456",
       },
       loginRules: {

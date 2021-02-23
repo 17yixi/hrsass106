@@ -3,24 +3,27 @@ import store from '@/store'
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-const whiteList = ['/login','/404']
+const whiteList = ['/login', '/404']
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     nprogress.start()
-    if(store.getters.token) {
-        if(to.path === '/login') {
+    if (store.getters.token) {
+        if (to.path === '/login') {
             next('/')
-        }else {
+        } else {
+            if (!store.getters.userId) {
+                await store.dispatch('user/getUserInfo')
+            }
             next()
         }
-    }else {
-        if(whiteList.indexOf(to.path) > -1) {
+    } else {
+        if (whiteList.indexOf(to.path) > -1) {
             next()
-        }else {
+        } else {
             next('/login')
         }
     }
 })
-router.afterEach(()=> {
+router.afterEach(() => {
     nprogress.done()
 })
