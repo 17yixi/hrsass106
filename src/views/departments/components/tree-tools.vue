@@ -44,9 +44,9 @@ export default {
   methods: {
     operateDepts(type) {
       if (type === "add") {
-        console.log('aaa');
         this.$emit('addDepts', this.treeNode)
       } else if (type === "edit") {
+        this.$emit('editDepts', this.treeNode)
       } else {
         this.$confirm("确认删除数据吗？")
           .then(() => {
