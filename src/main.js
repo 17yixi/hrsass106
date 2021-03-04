@@ -12,6 +12,8 @@ import App from './App'
 import store from './store'
 import router from './router'
 import * as directives from '@/directives' //导入所有自定义指令
+import Component from '@/components/index'
+import * as filters from '@/filters'  //导入所有过滤器
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -38,6 +40,13 @@ Vue.use(ElementUI, { locale })
 Object.keys(directives).forEach(key => {
   Vue.directive(key, directives[key])
 })
+
+// 注册全局过滤器
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
+Vue.use(Component)
 
 Vue.config.productionTip = false
 
